@@ -1,3 +1,38 @@
+const checkIfEmptyValue = (obj)=>{
+    let isEmpty = false;
+    for(const prop in obj){
+        if(obj[prop] == ""){
+            isEmpty == true;
+        }
+
+    }    
+    return isEmpty;
+}
+
+
+const showSuccessMessage = (message)=>{
+    Swal.fire({
+        position:'top-end',
+        title: message,
+        
+        icon: "success",
+        timer:1500,
+        showConfirmButton:false
+      });
+}
+const showErrorMessage = (message)=>{
+    Swal.fire({
+        position:'top-end',
+        title: message,
+        // text: "You clicked the button!",
+        icon: "error",
+        timer:1500,
+        showConfirmButton:false
+      });
+}
+
+
+
 const App = {
 
     data() {
@@ -5,11 +40,17 @@ const App = {
             showHome: false,
             showCreateForm: false,
             showStudentList: false,
+            newStudent:{
+                nom:'',
+                prenom:'',
+                dateNaissance:'',
+                niveauScolaire:''
+            }
         }
     },
 
     mounted(){
-        this.changeNavigationState();
+        this.changeNavigationState('Create');
     },
 
     methods:{
@@ -17,11 +58,34 @@ const App = {
         goToHome(){
             this.changeNavigationState('Home');
         },
+        
         goToCreateForm(){
             this.changeNavigationState('Create');
         },
+
         goToStudent(){
             this.changeNavigationState('List');
+        },
+
+        submitStudent(){
+
+            if(!checkIfEmptyValue(this.newStudent)){
+                if(!checkIfStudentExist(this.newStudent.nom,this.newStudent.prenom)){
+                    addStudent(this.newStudent);
+                    this.newStudent = {
+                        nom:'',
+                        prenom:'',
+                        dateNaissance:'',
+                        niveauScolaire:''
+                    }
+                    showSuccessMessage('etudiant ajoute avec success');
+                }else{
+                    showErrorMessage('cet etudiant est deja inscrit');
+                }
+               
+            }else{
+                showErrorMessage('veillez remplir tous les champs!');
+            }
         },
 
         changeNavigationState(destination){
